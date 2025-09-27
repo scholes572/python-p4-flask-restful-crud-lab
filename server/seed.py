@@ -6,6 +6,8 @@ from models import db, Plant
 
 with app.app_context():
 
+    db.create_all()
+
     Plant.query.delete()
 
     aloe = Plant(
