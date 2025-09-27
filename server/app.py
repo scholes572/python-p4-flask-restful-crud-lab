@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 
 from flask import Flask, jsonify, request, make_response
@@ -11,14 +12,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///plants.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
+# Setup database and migrations
 migrate = Migrate(app, db)
 db.init_app(app)
+
+# Create tables when app starts
+with app.app_context():
+    db.create_all()
 
 api = Api(app)
 
 
 class Plants(Resource):
-
     def get(self):
         plants = [plant.to_dict() for plant in Plant.query.all()]
         return make_response(jsonify(plants), 200)
@@ -42,7 +47,6 @@ api.add_resource(Plants, '/plants')
 
 
 class PlantByID(Resource):
-
     def get(self, id):
         plant = Plant.query.filter_by(id=id).first()
         if not plant:
@@ -71,8 +75,10 @@ class PlantByID(Resource):
 
         return make_response("", 204)
 
+
 api.add_resource(PlantByID, '/plants/<int:id>')
 
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
+
