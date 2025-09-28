@@ -2,6 +2,8 @@
 from flask import Flask, jsonify, request, make_response
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
+
+# Import db from models instead of creating a new instance
 from models import db, Plant
 
 app = Flask(__name__)
@@ -9,9 +11,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///plants.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
-# Setup database and migrations
-migrate = Migrate(app, db)
+# Initialize the SAME db instance with the app
 db.init_app(app)
+
+# Setup migrations
+migrate = Migrate(app, db)
 
 with app.app_context():
     db.create_all()
