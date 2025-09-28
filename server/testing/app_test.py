@@ -1,7 +1,7 @@
 import json
 
 from app import app
-from models import db, Plant
+from server.models import db, Plant
 
 class TestPlant:
     '''Flask application in app.py'''

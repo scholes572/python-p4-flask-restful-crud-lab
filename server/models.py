@@ -6,10 +6,10 @@ class Plant(db.Model):
     __tablename__ = "plants"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     image = db.Column(db.String)
-    price = db.Column(db.Float)
-    is_in_stock = db.Column(db.Boolean, default=True)
+    price = db.Column(db.Integer)
+    is_in_stock = db.Column(db.Boolean, default=True)   # 👈 important
 
     def to_dict(self):
         return {
