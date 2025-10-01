@@ -17,16 +17,13 @@ db.init_app(app)
 # Setup migrations
 migrate = Migrate(app, db)
 
-with app.app_context():
-    db.create_all()
-
 api = Api(app)
 
 class Plants(Resource):
     def get(self):
         plants = [plant.to_dict() for plant in Plant.query.all()]
         return make_response(jsonify(plants), 200)
-    
+
     def post(self):
         data = request.get_json()
         new_plant = Plant(
@@ -46,19 +43,21 @@ class PlantByID(Resource):
         if not plant:
             return make_response({"error": "Plant not found"}, 404)
         return make_response(plant.to_dict(), 200)
-    
+
     def patch(self, id):
         plant = Plant.query.filter_by(id=id).first()
         if not plant:
             return make_response({"error": "Plant not found"}, 404)
         
         data = request.get_json()
-        if "is_in_stock" in data:
-            plant.is_in_stock = data["is_in_stock"]
+        
+        # Update any field that's in the request data
+        for key in data:
+            setattr(plant, key, data[key])
         
         db.session.commit()
         return make_response(plant.to_dict(), 200)
-    
+
     def delete(self, id):
         plant = Plant.query.filter_by(id=id).first()
         if not plant:
