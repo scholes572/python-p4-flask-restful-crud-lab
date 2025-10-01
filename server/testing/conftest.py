@@ -9,7 +9,6 @@ from models import Plant
 @pytest.fixture(scope='session', autouse=True)
 def setup_database():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    db.init_app(app)  # Re-init with new config
     with app.app_context():
         db.create_all()
         # Seed plants
